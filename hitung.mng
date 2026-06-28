@@ -1,0 +1,28 @@
+cetak("=== Kalkulator Bahasa Minang ===");
+
+bulek a = 2;
+bulek b = 2;
+cetak("Nilai a = ", a);
+cetak("Nilai b = ", b);
+cetak("---------------------------");
+
+bulek tambah = a + b;
+cetak("a + b    = ", tambah);
+
+bulek kurang = a - b;
+cetak("a - b    = ", kurang);
+
+bulek kali = a * b;
+cetak("a kali b = ", kali);
+
+bulek bagi = a / b;
+cetak("a bagi b = ", bagi);
+
+pacahan akarDua = akar(a);
+cetak("akar a   = ", akarDua);
+
+pacahan akarEnambaleh = akar(16);
+cetak("akar 16  = ", akarEnambaleh);
+
+cetak("---------------------------");
+cetak("Salasai. Tarimo kasih!");

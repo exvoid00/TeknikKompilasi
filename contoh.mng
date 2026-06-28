@@ -1,0 +1,24 @@
+cetak("=== Program Minang ===");
+
+kato sambutan = "Apo kaba ang, masukkan umua ang:";
+cetak(sambutan);
+
+bulek umua = 0;
+baco(umua);
+
+cetak("Umua ang: ", umua, " tahun");
+
+jiko (umua > 17) {
+    cetak("Alah gadang");
+} indak {
+    cetak("Masih kete");
+}
+
+cetak("Itungan 1 sampai 3:");
+bulek i = 1;
+salamo (i < 10) {
+    cetak("ka-", i);
+    i = i + 1;
+}
+
+cetak("Salasai. Tarimo kasih!");
