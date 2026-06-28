@@ -2,3 +2,8 @@ __pycache__/
 build/
 *.pyc
 *.exe
+
+# File non-kode (cuma disimpan lokal, tidak diupload ke GitHub)
+Naskah_Video_Compiler_Minang.txt
+Thumbnail_Compiler_Minang.png
+Thumbnail_Compiler_Minang.svg
