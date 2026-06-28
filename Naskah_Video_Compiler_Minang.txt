@@ -1,0 +1,435 @@
+############################################################
+#                                                          #
+#   NASKAH VIDEO - PROJECT UAS TEKNIK KOMPILASI            #
+#   "Mini-Compiler Bahasa Minang"                          #
+#   Durasi target: 18-20 menit (aman lewat 15 menit)       #
+#                                                          #
+############################################################
+
+CARA BACA NASKAH INI:
+   >>> BUKA FILE: xxx     = buka file ini di editor, tampilkan ke layar
+   KETIK: xxx             = ketik perintah ini di terminal, tekan ENTER
+   TUNJUK baris N         = arahkan kursor ke baris itu
+   BACA:                  = kalimat di bawahnya yang diucapkan
+   CONTOH OUTPUT:         = tampilan hasil yang akan muncul di layar
+   (tulisan dalam kurung) = JANGAN dibaca, cuma petunjuk
+
+
+############################################################
+#  PERSIAPAN (kerjakan dulu, JANGAN direkam)               #
+############################################################
+
+1. Buka File Explorer, masuk ke folder:
+      C:\Kuliah\Teknikkompilasi\T.Code\Kampus\projectuas
+
+2. Buka terminal di folder itu:
+      klik kolom alamat di atas > ketik  cmd  > ENTER
+
+3. Perbesar font terminal:
+      klik kanan judul jendela > Properties > Font > 20-22 > OK
+
+4. Tes dulu (pastikan tidak error):
+      python main.py
+      python jalankan.py hitung.mng
+      python bangun.py hitung.mng --jalan
+
+5. Siapkan editor untuk menampilkan file .py.
+
+   ===> Kalau siap, MULAI REKAM dari bawah ini. <===
+
+
+############################################################
+#  [00:00]  BAGIAN 0 - PEMBUKAAN                           #
+############################################################
+
+BACA:
+"Assalamualaikum warahmatullahi wabarakatuh. Halo semuanya,
+perkenalkan nama saya [NAMA], NIM [NIM]. Pada video ini saya
+akan mempresentasikan project Ujian Akhir Semester mata kuliah
+Teknik Kompilasi."
+
+BACA:
+"Project yang saya buat adalah sebuah MINI-COMPILER, atau
+compiler sederhana, yang dibuat dengan bahasa Python. Yang
+unik, bahasanya memakai KEYWORD BAHASA MINANG, bukan bahasa
+Inggris."
+
+BACA:
+"Compiler ini punya ENAM tahap utama sesuai teori Teknik
+Kompilasi: Lexical Analysis, Syntax Analysis, pembentukan AST,
+Semantic Analysis, Optimization, dan Code Generation. Mari kita
+bahas satu per satu sambil saya tunjukkan kodenya."
+
+
+############################################################
+#  [01:30]  BAGIAN 1 - KEYWORD BAHASA MINANG               #
+############################################################
+
+   >>> BUKA FILE: lexer.py   (tunjuk baris 34, bagian KEYWORDS)
+
+BACA:
+"Sebelum mulai, saya jelaskan dulu bahasanya. Saya merancang
+keyword sendiri memakai bahasa Minang. Daftarnya seperti ini:"
+
+   bulek   = bilangan bulat (int)
+   pacahan = bilangan pecahan (float)
+   kato    = teks (string)
+   cetak   = menampilkan output (print)
+   baco    = membaca input (input)
+   jiko    = if (percabangan)
+   indak   = else
+   salamo  = while (perulangan)
+   akar    = akar kuadrat (fungsi bawaan)
+
+BACA:
+"Jadi kalau di bahasa lain ditulis 'if', di bahasa saya menjadi
+'jiko'. 'while' menjadi 'salamo', dan 'print' menjadi 'cetak'."
+
+
+############################################################
+#  [03:00]  BAGIAN 2 - TAHAP 1: LEXER                      #
+############################################################
+
+   >>> BUKA FILE: lexer.py
+
+BACA:
+"Tahap pertama adalah Lexical Analysis, atau Lexer. Tugasnya
+membaca kode sumber huruf demi huruf, lalu memecahnya menjadi
+potongan terkecil yang disebut TOKEN."
+
+   TUNJUK baris 9 (class TokenType)
+BACA:
+"Di sini saya mendefinisikan jenis-jenis token: NUMBER untuk
+angka, IDENTIFIER untuk nama variabel, STRING untuk teks,
+KEYWORD untuk kata kunci, OPERATOR, dan tanda baca."
+
+   TUNJUK baris 73 (fungsi tokenize)
+BACA:
+"Fungsi utamanya adalah tokenize. Cara kerjanya melihat
+karakter sekarang lalu memutuskan: kalau angka jadi NUMBER,
+kalau diawali tanda petik jadi STRING, kalau huruf dicek apakah
+keyword Minang atau nama variabel. Setiap token juga mencatat
+ada di baris berapa untuk pelacakan error."
+
+   KETIK: python main.py
+
+   (lihat output bagian [1] LEXICAL ANALYSIS)
+
+   CONTOH OUTPUT yang muncul:
+      Total 70 token, 12 jenis: ASSIGN, EOF, IDENTIFIER, KEYWORD,
+      LBRACE, LPAREN, NUMBER, OPERATOR, RBRACE, RPAREN, SEMICOLON, STRING
+          Token(KEYWORD, 'kato', ln=2)
+          Token(IDENTIFIER, 'pesan', ln=2)
+          Token(ASSIGN, '=', ln=2)
+          Token(STRING, 'Apo kaba', ln=2)
+          ... (dan seterusnya)
+
+BACA:
+"Sekarang kita jalankan. Bisa dilihat, dari program contoh ini
+dihasilkan 70 token dengan 12 jenis. Contohnya kata 'kato'
+menjadi KEYWORD, 'pesan' menjadi IDENTIFIER, dan 'Apo kaba'
+menjadi STRING. Jadi lexer berhasil mengubah teks mentah
+menjadi daftar token."
+
+
+############################################################
+#  [06:00]  BAGIAN 3 - TAHAP 2: PARSER (PARSE TREE)        #
+############################################################
+
+   >>> BUKA FILE: parser.py
+
+BACA:
+"Tahap kedua adalah Parser. Tugasnya mengecek apakah urutan
+token sesuai aturan grammar, lalu membangun PARSE TREE. Saya
+memakai metode Recursive Descent, jadi setiap aturan grammar
+dibuat menjadi satu fungsi."
+
+   TUNJUK baris 27 (fungsi eat)
+BACA:
+"Fungsi 'eat' ini mengambil token jika tipenya cocok, kalau
+tidak cocok berarti ada error sintaks."
+
+   TUNJUK baris 142 sampai 191 (expression, comparison, additive, term, factor)
+BACA:
+"Bagian terpenting ada di sini. Untuk perhitungan saya buat
+bertingkat: comparison, additive, term, lalu factor. Susunan
+inilah yang membuat perkalian otomatis lebih kuat daripada
+penjumlahan, sesuai aturan presedensi matematika."
+
+   (kembali ke terminal, lihat output bagian [2] SYNTAX ANALYSIS)
+
+   CONTOH OUTPUT (potongan, untuk x = 2 + 3 * 4):
+      var_decl
+        KEYWORD: 'bulek'
+        IDENTIFIER: 'x'
+        expression
+          ...
+            additive
+              term
+                factor
+                  NUMBER: 2
+              OPERATOR: '+'
+              term
+                factor
+                  NUMBER: 3
+                OPERATOR: '*'
+                factor
+                  NUMBER: 4
+      (3 * 4 di cabang 'term' yang sama -> perkalian lebih dulu)
+
+BACA:
+"Di output, inilah parse tree yang dihasilkan, lengkap dari
+'program' turun sampai 'factor'. Perhatikan dua tambah tiga
+kali empat: tiga kali empat ada di cabang 'term' yang sama,
+sementara tambah di level lebih atas. Artinya presedensi sudah
+benar. Karena sangat detail, di tahap berikutnya kita
+sederhanakan menjadi AST."
+
+
+############################################################
+#  [09:00]  BAGIAN 4 - TAHAP 3: AST                        #
+############################################################
+
+   >>> BUKA FILE: ast_builder.py   (tunjuk baris 15-16)
+
+BACA:
+"Tahap ketiga adalah membangun AST, Abstract Syntax Tree.
+Sesuai ketentuan tugas, AST dibangun DARI parse tree."
+
+BACA:
+"Tugasnya menyederhanakan parse tree yang tadi sangat detail.
+Node yang tidak penting seperti tanda kurung dan titik koma
+dibuang. Yang disimpan hanya inti maknanya, misalnya VarDecl
+untuk deklarasi, BinaryOp untuk operasi hitung, If, dan While."
+
+   (kembali ke terminal, lihat output bagian [3] ABSTRACT SYNTAX TREE)
+
+   CONTOH OUTPUT (jauh lebih ringkas dari parse tree):
+      Program()
+        VarDecl(var_type='bulek', name='x')
+          BinaryOp(op='+')
+            Number(value=2)
+            BinaryOp(op='*')
+              Number(value=3)
+              Number(value=4)
+        If()
+          BinaryOp(op='>')
+            Identifier(name='x')
+            Number(value=10)
+          ...
+
+BACA:
+"Di output, terlihat AST jauh lebih ringkas daripada parse
+tree. Perhitungan dua tambah tiga kali empat menjadi pohon
+BinaryOp yang rapi. AST inilah yang diproses tahap berikutnya."
+
+
+############################################################
+#  [11:30]  BAGIAN 5 - TAHAP 4: SEMANTIC ANALYSIS          #
+############################################################
+
+   >>> BUKA FILE: semantic_analyzer.py
+
+BACA:
+"Tahap keempat adalah Semantic Analysis, atau analisis makna.
+Di sini saya menggunakan SYMBOL TABLE, yaitu tabel yang
+mencatat semua variabel yang sudah dideklarasikan."
+
+   TUNJUK baris 11 (class SymbolTable), baris 53 (visit_VarDecl), baris 65 (visit_Identifier)
+BACA:
+"Cara kerjanya: saat menemukan deklarasi variabel, dicatat ke
+symbol table. Saat menemukan pemakaian variabel, dicek apakah
+sudah ada di symbol table. Kalau dipakai tapi belum
+dideklarasikan, compiler memberi error. Begitu juga kalau
+dideklarasikan dua kali."
+
+   (kembali ke terminal, lihat output bagian [4] -> "OK")
+
+   CONTOH OUTPUT:
+      OK - tidak ada error semantik.
+
+BACA:
+"Pada program ini hasilnya OK, karena semua variabel sudah
+dideklarasikan dengan benar sebelum digunakan."
+
+   --- OPSIONAL (nilai plus, tunjukkan deteksi error) ---
+   KETIK: python jalankan.py salah.mng
+   (file salah.mng isinya: cetak(z);  -- sudah disiapkan)
+
+   CONTOH OUTPUT:
+      [ERROR] Variabel 'z' dipakai tapi belum dideklarasikan.
+
+BACA:
+"Sebagai bukti, kalau saya memakai variabel 'z' yang belum
+dideklarasikan, compiler langsung menolaknya dan memberi tahu
+bahwa variabel itu belum dideklarasikan."
+
+
+############################################################
+#  [13:30]  BAGIAN 6 - TAHAP 5: OPTIMIZATION               #
+############################################################
+
+   >>> BUKA FILE: code_optimizer.py
+
+BACA:
+"Tahap kelima adalah Optimasi, untuk membuat kode lebih efisien
+tanpa mengubah hasil. Teknik yang saya pakai adalah CONSTANT
+FOLDING."
+
+   TUNJUK baris 36 (visit_BinaryOp) dan baris 52 (visit_Sqrt)
+BACA:
+"Lihat di kode: kalau operasi memiliki dua angka tetap,
+misalnya tiga kali empat, langsung dihitung saat kompilasi.
+Saya juga menambahkan optimasi untuk fungsi akar, jadi akar
+dari 16 langsung dihitung menjadi 4."
+
+   (kembali ke terminal, lihat output bagian [5])
+
+   CONTOH OUTPUT:
+      2 optimasi diterapkan (constant folding).
+      ...
+        VarDecl(var_type='bulek', name='x')
+          Number(value=14)      <-- tadinya 2 + 3 * 4, kini langsung 14
+
+BACA:
+"Di output, variabel x yang tadinya dua tambah tiga kali empat,
+setelah dioptimasi langsung menjadi 14. Compiler juga melaporkan
+dua optimasi berhasil diterapkan."
+
+
+############################################################
+#  [15:30]  BAGIAN 7 - TAHAP 6: CODE GENERATION            #
+############################################################
+
+   >>> BUKA FILE: code_generator.py
+
+BACA:
+"Tahap terakhir adalah Code Generation. Compiler mengubah AST
+menjadi kode antara berbentuk THREE-ADDRESS CODE, atau kode
+tiga alamat."
+
+   TUNJUK baris 16 (new_temp), baris 20 (new_label), baris 89 (visit_If), baris 105 (visit_While)
+BACA:
+"Di kode, saya membuat fungsi untuk menghasilkan variabel
+sementara seperti t1 dan t2, serta label seperti L1 dan L2.
+Untuk percabangan dan perulangan, diterjemahkan menjadi
+perintah lompat IF_FALSE dan GOTO, mirip cara kerja bahasa
+mesin."
+
+   (kembali ke terminal, lihat output bagian [6])
+
+   CONTOH OUTPUT (Three-Address Code):
+      pesan = "Apo kaba"
+      PRINT pesan
+      x = 14
+      READ x
+      t1 = x > 10
+      IF_FALSE t1 GOTO L1
+      PRINT "gadang"
+      GOTO L2
+      L1:
+      PRINT "ketek"
+      L2:
+      i = 0
+      L3:
+      t2 = i < 3
+      IF_FALSE t2 GOTO L4
+      PRINT i
+      t3 = i + 1
+      i = t3
+      GOTO L3
+      L4:
+
+BACA:
+"Inilah hasilnya. Pemberian nilai menjadi 'x sama dengan 14',
+input menjadi READ, cetak menjadi PRINT. Untuk percabangan:
+dihitung t1 sama dengan x lebih besar 10, lalu IF_FALSE t1 GOTO
+L1, artinya kalau salah lompat ke blok else. Inilah hasil akhir
+compiler."
+
+
+############################################################
+#  [18:00]  BAGIAN 8 - DEMO: BAHASA BISA MENGHITUNG        #
+############################################################
+
+   >>> BUKA FILE: hitung.mng
+
+BACA:
+"Selain menampilkan tahapan, compiler ini benar-benar bisa
+menjalankan program. Saya buatkan program kalkulator bernama
+hitung titik mng."
+
+BACA:
+"Program ini membuat dua variabel a dan b, lalu melakukan
+penjumlahan, pengurangan, perkalian, pembagian, dan akar
+kuadrat memakai fungsi 'akar' yang saya tambahkan sendiri."
+
+   KETIK: python jalankan.py hitung.mng
+
+   CONTOH OUTPUT:
+      === Kalkulator Bahasa Minang ===
+      Nilai a = 2
+      Nilai b = 2
+      a + b    = 4
+      a - b    = 0
+      a kali b = 4
+      a bagi b = 1.0
+      akar a   = 1.4142135623730951
+      akar 16  = 4.0
+      Salasai. Tarimo kasih!
+
+BACA:
+"Programnya benar-benar berjalan: a kali b sama dengan 4, a
+bagi b sama dengan 1, akar dari 2 sama dengan 1,41, dan akar
+dari 16 sama dengan 4."
+
+BACA:
+"Bahkan, compiler ini bisa mengubah program Minang menjadi file
+EXE, dengan menerjemahkannya ke bahasa C lalu dikompilasi GCC."
+
+   KETIK: python bangun.py hitung.mng --jalan
+BACA:
+"Hasilnya file executable yang berjalan langsung di Windows
+tanpa Python. Jadi ini compiler yang benar-benar berfungsi
+penuh."
+
+
+############################################################
+#  [20:00]  BAGIAN 9 - PENUTUP                             #
+############################################################
+
+BACA:
+"Sebagai kesimpulan, project ini adalah mini-compiler dengan
+bahasa berkeyword Minang, mencakup enam tahap lengkap: Lexer,
+Parser dengan Parse Tree, pembentukan AST, Semantic Analysis
+dengan symbol table, Optimasi dengan constant folding, dan Code
+Generation berupa Three-Address Code. Bahkan bisa dijalankan
+dan dikompilasi menjadi file EXE."
+
+BACA:
+"Demikian presentasi project UAS Teknik Kompilasi dari saya.
+Mohon maaf bila ada kekurangan. Terima kasih telah menonton.
+Wassalamualaikum warahmatullahi wabarakatuh."
+
+
+############################################################
+#  URUTAN PERINTAH (cuma 3, urut)                          #
+############################################################
+   1.  python main.py
+   2.  python jalankan.py hitung.mng
+   3.  python bangun.py hitung.mng --jalan
+   (opsional)  python jalankan.py salah.mng
+
+
+############################################################
+#  CHECKLIST SEBELUM REKAM                                 #
+############################################################
+[ ] Terminal sudah di folder projectuas (cek: ketik 'dir')
+[ ] Font terminal sudah besar (20-22)
+[ ] File .py sudah dibuka di editor
+[ ] Sudah tes 3 perintah, tidak ada error
+[ ] Ganti [NAMA] dan [NIM] saat bicara
+[ ] Bicara PELAN (kunci tembus 15 menit)
+[ ] Patokan: saat Bagian 7, durasi harusnya sudah ~15 menit
+[ ] Durasi total minimal 15 menit
+############################################################
